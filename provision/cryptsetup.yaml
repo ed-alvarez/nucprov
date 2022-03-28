@@ -1,0 +1,14 @@
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+
+    - name: Crypt Setup
+      shell: |
+        echo $(tr -dc A-Za-z0-9 </dev/urandom | head -c 64) | sudo clevis encrypt tpm2 '{"pcr_ids":"7"}'
+        echo nucPassw0rd | sudo clevis luks bind -d $(sudo fdisk -l | grep system | tail -1 | awk '{print $1}') tpm2 '{"pcr_ids":"7"}'
+        echo nucPassw0rd | sudo cryptsetup luksRemoveKey $(sudo fdisk -l | grep system | tail -1 | awk '{print $1}')
+
+    - name: Regenerate initramfs 
+      apt: name=clevis-initramfs state=latest update_cache=yes

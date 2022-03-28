@@ -1,0 +1,9 @@
+network:
+  ethernets:
+    enp3s0:
+      dhcp4: yes
+      optional: true
+    eno1:
+      addresses: 
+      - 10.16.0.99/24
+  version: 2

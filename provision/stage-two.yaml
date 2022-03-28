@@ -1,0 +1,10 @@
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+    - include: gui.yaml
+    - include: docker-prep.yaml
+    - include: rm-risks.yaml
+    - include: minion.yaml
+

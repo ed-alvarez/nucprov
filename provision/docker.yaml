@@ -1,0 +1,25 @@
+    - name: Ensure group "docker" exists
+      group:
+        name: docker
+        state: present
+
+    - name: Add docker gpg key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add docker repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Install docker-compose
+      get_url: 
+        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64 
+        dest: /usr/local/bin/docker-compose
+        group: docker
+        mode: 'u+x,g+x'
+

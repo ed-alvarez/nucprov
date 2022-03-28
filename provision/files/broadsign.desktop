@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=DISPLAY=:0 && xhost +local:docker && cd /opt && docker-compose up -d
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Run-Broadsign
+Name=Run Broadsign
+Comment[en_US]=Run-Broadsign
+Comment=Run Broadsign

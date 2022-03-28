@@ -1,0 +1,4 @@
+    - name: Install clevis
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'clevis-tpm2', 'clevis-luks', 'clevis-dracut']
+

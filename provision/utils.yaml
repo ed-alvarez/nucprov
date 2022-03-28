@@ -1,0 +1,4 @@
+    - name: Install OpenVPN and utils
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'openvpn', 'ppp', 'monit' ]
+

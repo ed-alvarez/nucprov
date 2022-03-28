@@ -1,0 +1,122 @@
+#cloud-config
+autoinstall:
+  version: 1
+  apt:
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches: [amd64]
+      uri: http://us.archive.ubuntu.com/ubuntu
+  identity: {hostname: eurochgr, password: THE_PASSWORD,
+    realname: nucadmin, username: nucadmin}
+  keyboard: {layout: us, toggle: null, variant: ''}
+  locale: en_US
+  network:
+    ethernets:
+      all:
+        match:
+          name: "en*"
+        dhcp4: true   
+        optional: true
+    version: 2
+#    wifis:
+#      wlp0s20f3:
+#        access-points:
+#          HouseWiFi: {password: '2532270228'}
+#        dhcp4: true
+  ssh:
+    allow-pw: true 
+    authorized-keys: []
+    install-server: true
+  storage:
+    version: 1
+    grub:
+      reorder_uefi: false
+    config:
+      - id: sda
+        type: disk
+        ptable: gpt 
+        match: {}
+        grub_device: false
+        wipe: superblock-recursive
+        preserve: false
+
+      - id: boot_partition
+        type: partition
+        size: 512M
+        device: sda
+        flag: boot
+        number: 1
+        preserve: false
+        wipe: superblock
+        grub_device: true
+
+      - id: sda1
+        type: format
+        preserve: false
+        fstype: fat32
+        volume: boot_partition
+ 
+      - id: sda2
+        type: partition
+        size: 1M
+        device: sda
+        number: 2
+        preserve: false
+        flag: ''
+        grub_device: false
+
+      - id: sda3
+        type: partition
+        size: 1G
+        device: sda
+        number: 3
+        preserve: false
+        flag: ''
+        wipe: superblock
+        grub_device: false
+
+      - id: sda4
+        type: partition
+        size: -1
+        device: sda
+        number: 4
+        preserve: false
+        flag: ''
+        wipe: superblock
+        grub_device: false
+ 
+      - id: sda4_crypto
+        type: dm_crypt
+        volume: sda4
+        key: nucPassw0rd 
+        dm_name: sda4_crypto
+
+      - id: sda3_boot
+        type: format
+        fstype: ext4
+        volume: sda3
+        preserve: false
+
+      - id: sda4_root
+        type: format
+        fstype: ext4
+        volume: sda4_crypto
+        preserve: false
+ 
+      - id: sda4_mount
+        type: mount
+        path: /
+        device: sda4_root
+
+      - id: sda3_mount
+        type: mount
+        path: /boot
+        device: sda3_boot
+
+      - id: efi_mount
+        type: mount
+        path: /boot/efi
+        device: sda1
+  late-commands:
+    - curtin in-target --target=/target -- sudo ansible-playbook /root/provision/cryptsetup.yaml 

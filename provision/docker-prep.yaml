@@ -1,0 +1,25 @@
+    - name: Add nucadmin to docker group
+      ansible.builtin.user:
+        name: nucadmin
+        group: docker
+
+    - name: Add kiosk to docker group
+      ansible.builtin.user:
+        name: kiosk
+        group: docker
+      
+    - name: Add nucadmin to sudoers
+      shell: |
+        echo "nucadmin ALL=(ALL) NOPASSWD: ALL" | tee /etc/sudoers.d/nucadmin
+
+    - name: Copy assets
+      shell: |
+        mkdir -p /opt/assets && cp /root/assets.tar.gz /opt/assets
+        cd /opt/assets && tar -xvzf assets.tar.gz
+        cp /root/bsqv-setup/broadsign-player.Dockerfile /opt
+        cp /root/bsqv-setup/docker-compose.yml /opt
+
+    - name: Build images
+      shell: |
+        DISPLAY=:0 && cd /opt && docker volume create --name=broadsign-player-data
+        DISPLAY=:0 && cd /opt && docker-compose build

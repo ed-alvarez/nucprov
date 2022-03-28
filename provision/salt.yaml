@@ -1,0 +1,23 @@
+    - name: Install required packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg', 'lsb-release']
+
+    - name: Add SaltStack gpg key
+      apt_key:
+        url: https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest/salt-archive-keyring.gpg
+        state: present
+    
+    - name: Add SaltStack repo 
+      apt_repository:
+        repo: deb https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest focal main
+        state: present
+
+    - name: Add python3.7 repo
+      apt_repository:
+        repo: ppa:deadsnakes/ppa 
+        state: present
+
+    - name: Install Python 3.7 and Salt-Minion
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'python3.7', 'salt-minion']
+

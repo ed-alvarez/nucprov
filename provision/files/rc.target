@@ -1,0 +1,7 @@
+#!/bin/bash 
+
+cd /root/provision && ansible-playbook stage-two-yaml
+reboot
+
+exit 0
+

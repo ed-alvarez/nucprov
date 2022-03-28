@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+  broadsign-player:
+    image: broadsign-player:latest
+    build:
+      context: .
+      dockerfile: broadsign-player.Dockerfile
+    container_name: broadsign-player
+    privileged: true
+    tty: true
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XSOCK=/tmp/.X11-unix
+      - XAUTH=/tmp/.docker.xauth
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - broadsign-player-data:/opt/broadsign
+    network_mode: host
+volumes:
+  broadsign-player-data:
+    external: true

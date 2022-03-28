@@ -1,0 +1,14 @@
+[Unit]
+Description=BroadSign Kiosk
+After=default.target
+
+[Service]
+Type=simple
+Environment="DISPLAY=:0"
+ExecStart=/bin/bash /home/kiosk/kiosk.sh
+Restart=on-failure
+User=kiosk
+Group=kiosk
+
+[Install]
+WantedBy=default.target

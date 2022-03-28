@@ -1,0 +1,10 @@
+- hosts: localhost
+  connection: local 
+  become: true
+
+  tasks:
+    - include: salt.yaml
+    - include: clevis.yaml
+    - include: utils.yaml
+    - include: docker.yaml
+

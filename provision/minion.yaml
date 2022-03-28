@@ -1,0 +1,7 @@
+    - name: Fix hostname, minion_id and hosts
+      shell: |
+        HOST_NAME=nprov-$(ip addr | grep ether | head -1 | awk '{print $2}' | sed 's/://g') 
+        echo $HOST_NAME > /etc/hostname && cp /etc/hostname /etc/salt/minion_id
+        echo "127.0.0.1 $HOST_NAME" >> /etc/hosts
+        echo master:  178.62.43.104 >> /etc/salt/minion
+        echo "Minion provisioned!" > /root/STAGE_TWO_DONE

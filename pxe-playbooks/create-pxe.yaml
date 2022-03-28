@@ -1,0 +1,8 @@
+- hosts: localhost
+  connection: local 
+  become: true
+
+  tasks:
+    - include: setup-and-copy.yaml 
+    - include: final-commands.yaml
+

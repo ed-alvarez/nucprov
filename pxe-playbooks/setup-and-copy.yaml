@@ -1,0 +1,89 @@
+    - name: Install required packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apache2', 'syslinux', 'dnsmasq', 'net-tools' ]
+
+    - name: Fix resolver
+      shell: |
+        systemctl disable systemd-resolved
+        systemctl mask systemd-resolved
+        systemctl stop systemd-resolved
+        rm -rf /etc/resolv.conf
+        echo "nameserver 8.8.8.8" > /etc/resolv.conf 
+        chattr +i /etc/resolv.conf
+
+    - name: Create GRUB and TFTP folders 
+      file: state=directory recurse=yes path=/tftpboot/grub
+
+    - name: Copy GRUB for PXE 
+      copy: 
+        src: grub.cfg
+        dest: /tftpboot/grub/grub.cfg
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy EFI files
+      shell: |
+        cp /usr/lib/syslinux/modules/efi64/{ldlinux.e64,libutil.c32,menu.c32} /tftpboot
+        cp /boot/efi/EFI/ubuntu/shimx64.efi /tftpboot/ /tftpboot
+        cp /usr/lib/grub/x86_64-efi-signed/grubnetx64.efi.signed /tftpboot/grubx64.efi        
+
+    - name: Create dnmasq config folder
+      file: state=directory recurse=yes path=/etc/dnsmasq.d
+
+    - name: Copy TFTP config for dnsmasq
+      copy:
+        src: pxe.conf
+        dest: /etc/dnsmasq.d/pxe.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Prepare network
+      copy:
+        src: 00-installer-config.yaml
+        dest: /etc/netplan/00-installer-config.yaml
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Prepare Apache and cloud-init
+      file: state=directory recurse=yes path=/var/www/html/efiboot/cloud-init
+
+    - name: Copy customized image 
+      copy:
+        src: ../NUC-net-latest.iso
+        dest: /var/www/html/efiboot/server-efi.iso
+
+    - name: Mount custom image
+      shell: | 
+        echo 'Mounting custom image'      
+        mount /var/www/html/efiboot/server-efi.iso /mnt
+
+    - name: Create empty meta-data
+      file: state=touch path=/var/www/html/efiboot/cloud-init/meta-data      
+
+    - name: Copy base user-data
+      copy: 
+        src: user-data
+        dest: /var/www/html/efiboot/cloud-init/user-data
+        owner: root
+        group: root
+        mode: '0644' 
+
+    - name: Copy initrd
+      copy:
+        src: /mnt/casper/initrd 
+        dest: /tftpboot/initrd
+        owner: root 
+        group: root
+        mode: '0644'
+
+    - name: Copy vmlinuz
+      copy:
+        src: /mnt/casper/vmlinuz 
+        dest: /tftpboot/vmlinuz
+        owner: root
+        group: root
+        mode: '0644'
+

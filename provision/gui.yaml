@@ -1,0 +1,67 @@
+    - name: Install tasksel
+      apt: name=tasksel state=latest update_cache=yes
+    
+    - name: Create kiosk user
+      ansible.builtin.user:
+        name: "kiosk"
+        shell: /bin/false
+        password: "{{ lookup('password', '/dev/null length=24 chars=ascii_letters') | password_hash('sha512') }}"
+      
+    - name: Ubuntu desktop
+      command: tasksel install ubuntu-desktop
+      register: result
+      changed_when: result is not succeeded
+
+    - name: Create autostart
+      file:
+        state: directory
+        recurse: yes
+        path: /home/kiosk/.config/autostart
+        owner: kiosk 
+        group: kiosk
+        mode: '0755'
+
+    - name: Enable GDM3 Autologin
+      replace:
+        path: /etc/gdm3/custom.conf
+        regexp: '\#  AutomaticLoginEnable = true\n#  AutomaticLogin = user1'
+        replace: 'AutomaticLoginEnable = true\nAutomaticLogin = kiosk'
+    
+    - name: Disable initial Gnome setup screen
+      copy:
+        content: ""
+        dest: /home/kiosk/.config/gnome-initial-setup-done
+        group: kiosk
+        owner: kiosk
+
+    - name: Create kiosk environment
+      copy:
+        src: files/kiosk.sh
+        dest: /home/kiosk/kiosk.sh
+        owner: kiosk
+        group: kiosk
+        mode: '0755'
+
+    - name: Create kiosk systemd unit
+      copy:
+        src: files/kiosk.service
+        dest: /lib/systemd/system/kiosk.service
+        owner: kiosk
+        group: kiosk
+        mode: '0644'
+
+    - name: Enable kiosk systemd unit
+      ansible.builtin.systemd:
+        name: kiosk
+        state: started
+        enabled: yes
+
+    - name: Removing Ubuntu's Dock and top bar (1/2)
+      apt:
+        name: gnome-shell-extension-ubuntu-dock
+        state: absent
+
+    - name: Removing Ubuntu's Dock and top bar (2/2)
+      apt:
+        name: gnome-shell-extension-autohidetopbar
+        state: present

@@ -1,0 +1,792 @@
+    - name: Removing Ubuntu Software Update popup
+      shell: |
+        echo "Hidden=yes" >> /etc/xdg/autostart/update-notifier.desktop
+        sed --in-place 's/NoDisplay=true/NoDisplay=false/g' /etc/xdg/autostart/update-notifier.desktop
+
+    - name: Disable session lock and idle timeouts (1/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/screensaver/lock-enabled"
+        value: "false"
+        state: present
+
+    - name: Disable session lock and idle timeouts (2/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/screensaver/lock-delay"
+        value: "uint32 0"
+        state: present
+
+    - name: Disable session lock and idle timeouts (3/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/session/idle-delay"
+        value: "uint32 0"
+        state: present
+
+    - name: Disable session lock and idle timeouts (4/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/lockdown/disable-log-out"
+        value: "true"
+        state: present
+
+    - name: Disable session lock and idle timeouts (5/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/lockdown/disable-command-line"
+        value: "true"
+        state: present
+
+    - name: Disable session lock and idle timeouts (6/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/screensaver"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable bubble notifications (1/4)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/todo/plugins/background/show-notifications"
+        value: "false"
+        state: present
+
+    - name: Disable bubble notifications (2/4)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/notifications/show-banners"
+        value: "false"
+        state: present
+
+    - name: Disable bubble notifications (3/4)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/notifications/application/org-gnome-nautilus/show-banners"
+        value: "false"
+        state: present
+
+    - name: Disable bubble notifications (4/4)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/notifications/application/update-manager/show-banners"
+        value: "false"
+        state: present
+
+    - name: Disable keybinds (1/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/close"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (2/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/minimize"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (3/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/maximize"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (4/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-monitor-down"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (5/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-monitor-left"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (6/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-monitor-right"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (7/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-monitor-up"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (8/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (9/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-down"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (10/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-last"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (11/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-left"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (12/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-right"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (13/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-up"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (14/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/panel-main-menu"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (15/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/panel-run-dialog"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (16/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/show-desktop"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (17/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-applications"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (18/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (19/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-input-source"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (20/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-input-source-backward"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (21/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-panels"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (22/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-panels-backward"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (23/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (24/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-down"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (25/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-last"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (26/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-left"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (27/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-right"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (28/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-up"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (29/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-windows"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (30/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (31/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/toggle-maximized"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable keybinds (32/32)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/wm/keybindings/unmaximize"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (1/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-1"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (2/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-2"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (3/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-3"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (4/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-4"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (5/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-5"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (6/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-6"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (7/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-7"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (8/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-8"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (9/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-9"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (10/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-ctrl-hotkey-10"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (11/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-1"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (12/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-2"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (13/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-3"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (14/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-4"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (15/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-5"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (16/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-6"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (17/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-7"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (18/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-8"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (19/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-9"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (20/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-hotkey-10"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (21/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-1"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (22/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-2"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (23/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-3"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (24/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-4"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (25/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-5"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (26/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-6"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (27/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-7"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (28/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-8"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (29/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-9"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (30/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/app-shift-hotkey-10"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (31/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-1"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (32/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-2"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (33/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-3"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (34/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-4"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (35/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-5"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (36/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-6"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (37/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-7"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (38/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-8"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (39/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-9"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable Super keybinds (40/40)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/switch-to-application-10"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable GNOME misc keybinds (1/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/open-application-menu"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable GNOME misc keybinds (2/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/toggle-application-view"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable GNOME misc keybinds (3/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/toggle-message-tray"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable GNOME misc keybinds (4/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/keybindings/toggle-overview"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable GNOME misc keybinds (5/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/restore-shortcuts"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable GNOME misc keybinds (6/6)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/overlay-key"
+        value: "''"
+        state: present
+
+    - name: Disable Dash-to-Dock shortcuts (1/3)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/hot-keys"
+        value: "false"
+        state: present
+
+    - name: Disable Dash-to-Dock shortcuts (2/3)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/hotkeys-overlay"
+        value: "false"
+        state: present
+
+    - name: Disable Dash-to-Dock shortcuts (3/3)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/hotkeys-show-dock"
+        value: "false"
+        state: present
+
+    - name: Disable VT switch with GNOME (1/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-1"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (2/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-2"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (3/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-3"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (4/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-4"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (5/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-5"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (6/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-6"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (7/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-7"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (8/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-8"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (9/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-9"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (10/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-10"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (11/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-11"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable VT switch with GNOME (12/12)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/mutter/wayland/keybindings/switch-to-session-12"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable app and media keys (1/7)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/help"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable app and media keys (2/7)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/hibernate-static"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable app and media keys (3/7)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/home-static"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable app and media keys (4/7)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/logout"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable app and media keys (5/7)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/www-static"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable app and media keys (6/7)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/terminal"
+        value: "['disabled']"
+        state: present
+
+    - name: Disable app and media keys (7/7)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/active"
+        value: "false"
+        state: present
+
+    - name: Remove Ubuntu background (1/2)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/background/picture-uri"
+        value: "'none'"
+        state: present
+
+    - name: Remove Ubuntu background (2/2)
+      become_user: "kiosk"
+      community.general.dconf:
+        key: "/org/gnome/desktop/background/primary-color"
+        value: "'#000000'"
+        state: present
+
+    - name: Updating dconf database
+      become_user: "root"
+      command: dconf update
