@@ -1,61 +1,105 @@
 # Scripts to generate a custom, provisioned, auto-installer ISO
 
-- The generated ISO will have installed (via ansible) all the dependecies needed to run
-  the NUC/SBC related applications, it will also carry the "last stage" playbooks with 
-  the minimal human intervention.
+- The generated ISO will install (via ansible) all the dependencies needed to run
+  the NUC/SBC software. It will also carry "last stage" playbooks with minimal 
+  human intervention.
 
-- This script have two parameters, the first one is the folder to uncompress the original
-  image file, the second one is the ISO file to customize (if the file does not exist in
-  the given path, it will download Ubuntu 20.04 from the official URL)
+- This script has two parameters. The first one is the folder to uncompress the original
+  image file into. The second parameter is the ISO file to customize (if the file does not exist in
+  the given path, it will download Ubuntu 20.04.03 from the official URL). Example:
 
-  Example: ./isogen.sh folder iso-file
+  ```
+  $ cd nucprov
+  $ mkdir temporal-folder
+  $ ./isogen.sh ./temporal-folder ubuntu-image.iso
+  ```
 
-  It will generate a resultant file called "NUC-net-YYMMHHMM.iso" on the current folder, 
-  that image should be copied to `NUC-net-latest.iso`, which is ready to use on PXE with 
-  the respective `user-data` file available
+  After the script is done, an image named "NUC-net-YYMMHHMM.iso" will be generated in the root of the
+  current folder (nucprov).
 
-- In the second optional step to generate an autoinstall image we shold use `genauto.sh` 
-  which takes three parameters, first the folder to uncompress the resultant `.iso` file 
-  (third parameter) from `isogen.sh`, the second one is the `user-data` file to inject, 
-  it will generate a new image file called `NUC-auto-YYMMHHMM.iso`"
+  **NOTE: The generated image should be renamed to `NUC-net-latest.iso` in order to be automatically
+  picked up by the PXE setup scripts located under the folder `pxe-playbooks`.**
 
-  Example: ./genauto.sh folder user-data-file NUC-net-YYMHHMM.iso
+<br />
 
-  Please note the resultant image from `genauto.sh` is suitable only for image based setups 
-  and SHOULD NOT be used on PXE, for that case we need to use `NUC-net-latest.iso`
+## (Optional) Generate an autoinstall image for "PXE-less" setups
+
+We can also generate an autoinstall image for setups that do not require a PXE
+server and want to be used in virtual or temporal environments (installed via USBs, virtualized, etc).
+
+To achieve this, we can use the script `genauto.sh`. This script takes three parameters.
+The first one is the folder to uncompress a temporal Ubuntu image ISO into for further
+customization. The second one is a `user-data` file to inject (You can find an example file under
+the root of this folder (nucprov) or a generated one after creating the PXE server in the `pxe-playbooks` folder). 
+The third parameter is the image generated with the `isogen.sh` script. Example:
+
+**NOTE: You can only use ./genauto.sh after creating a PXE server. For further details refer to the document `docs/Steps-to-create-and-configure-PXE-with-EFI`.**
+
+```
+$ cd nucprov
+$ mkdir temporal-folder
+$ ./genauto.sh ./temporal-folder ./pxe-playbooks/user-data ./NUC-net-YYMHHMM.iso
+```
+
+**Please note the resultant image from `genauto.sh` is suitable only for image-based setups 
+and SHOULD NOT be used on PXE servers. For PXE server setups we need to use the image generated with the `isogen.sh`
+only.**
+
+<br />
 
 # Playbooks inside this repo are for:
 
-- PXE Server
+- PXE server creation
 - Base image customization
-- Last stage  provisioning steps
-- Final configuration to go Production 
+- Last stage provisioning steps
+- Final configuration to go to production
 
-Once the device is provisioned on the first stage, we need to enter via console with the given 
+Once the device is provisioned on the first stage, we need to access said device via console with the given 
 credentials and run the second provisioning stage.
 
 ```
-sudo -i
-cd /root/provision
-ansible-playbook stage-two-yaml
-reboot
+$ sudo -i
+# cd /root/provision
+# ansible-playbook stage-two.yaml
 ```
 
-On next boot you will see on the GUI the Broadsign Player asking for registration (in full screen), the resultant provisioned image could be cloned, but bare in mind that a set of manual customization should be needed, such as OpenVPN client profile and `salt-minion` id.
+**After the `stage-two.yaml` playbook finishes running. We need to reboot the device:**
 
-Now you should go to a SaltStack Master and register the minion, which should have a name similar to `nprov-aabbccddeeff` listed as `Unaccepted Keys`:, where "aabbccddeeff" is the device MAC Address related to the Ethernet interface.
+```
+# reboot
+```
 
-Inside the SaltMaster console as root, you shoud issue this set of commands.
+After rebooting, you will see Ubuntu Desktop has been installed and after 5 to 10 seconds, Broadsign Control Player will
+open. Proceed with the registration of the device requested by Broadsign:
+
+<center>
+  <img src="https://docs.broadsign.com/broadsign-control/14-0/Resources/Images/quick-start-player-registration-v14.png" />
+</center>
+
+# Setting up further "control" services
+
+In order to control our device remotely without intrusion, we need to set up an OpenVPN client and a salt-minion id. A salt-minion is already configured
+by our Ansible playbooks into the NUC device and has the following name/format: `nprov-aabbccddeeff`. "aabbccddeeff" is the device MAC address related to the Ethernet interface.
+
+After our device has finished rebooting for the first time after applying the `stage-two.yml` playbook, the SaltStack minion automatically
+provisioned by our scripts, will request our SaltMaster to be approved.
+
+Go to your SaltStack Master and register the minion, which should have a name similar to `nprov-aabbccddeeff` listed as `Unaccepted Keys`. Run the following
+commands:
+
 ```
 # salt-key
 Accepted Keys:
 Denied Keys:
 Unaccepted Keys:
-nprov-nprov-aabbccddeeff
+nprov-aabbccddeeff
 Rejected Keys:
 ```
 
-Then proceed to register the "unaccepted" minion_id
+Here we can see our minion requesting to be registered.
+
+Proceed to register the "unaccepted" minion by running the following command:
+
 ```
 # salt-key -a nprov-aabbccddeeff
 The following keys are going to be accepted:
@@ -65,29 +109,76 @@ Proceed? [n/Y] y
 Key for minion nprov-aabbccddeeff accepted.
 ```
 
-Test if the minion is connected
+**(Optional)** Check if the minion is listed as registered by running:
 
 ```
-# salt 'nprov-aabbccddeeff' test.ping
-nprov-aabbccddeeff:
-    True
 # salt-key
 Accepted Keys:
 nprov-aabbccddeeff
 Denied Keys:
 Unaccepted Keys:
 Rejected Keys:
-
 ```
 
-Now you can upload the OpenVPN profile for the client generated on the OpenVPN server
-(it could be a good idea to setup on the same server which is running SaltMaster on 
-behalf of simplicity) and reboot
+You should see our minion in the `Accepted Keys` section.
+
+Test the connection to the minion:
 
 ```
-# salt-cp nprov-aabbccddeeff nuc-node-name.ovpn /etc/openvpn/client.conf
-# salt 'nprov-aabbccddeeff' cmd.run reboot
+# salt 'nprov-aabbccddeeff' test.ping
+nprov-aabbccddeeff:
+    True
 ```
 
-# Under /docs we will find some more detailed documentation about all related provisioning steps.
+After our minion is set, we need to set up our OpenVPN server and upload our 
+OpenVPN profile to our registered minion:
 
+```
+$ sudo ./openvpn-install.sh
+$ sudo ./set_ip.sh DeviceName VPN_IP
+```
+
+The set of commands above will install an OpenVPN server and generate an OpenVPN profile.
+
+**NOTE: Newly generated OpenVPN profiles will be saved into the root of your home folder.**
+
+**NOTE 2: You can use the `openvpn-install.sh` script and select the first option to generate new OpenVPN profiles:**
+
+> ```
+> $ sudo ./openvpn-install.sh
+> Welcome to OpenVPN-install!
+>The git repository is available at: https://github.com/angristan/openvpn-install
+>
+>It looks like OpenVPN is already installed.
+>
+>What do you want to do?
+>   1) Add a new user
+>   2) Revoke existing user
+>   3) Remove OpenVPN
+>   4) Exit
+>Select an option [1-4]: 1
+>```
+
+Now we need to upload said generated profile to our registered minion:
+
+```
+$ sudo salt-cp "nprov-aabbccddeeff" $HOME/DeviceName.ovpn /etc/openvpn/client.conf
+$ sudo salt "nprov-aabbccddeeff" cmd.run reboot
+```
+
+To access from a personal computer, that computer must also have an OpenVPN profile. Create one using the same method as above 
+and transfer the OpenVPN profile to the personal computer! 178.62.43.104 is the IP of the Digital Ocean "droplet"
+
+```
+scp root@178.62.43.104:/root/DeviceName.ovpn ~/Downloads
+```
+
+Finally, test your OpenVPN connection. You can access VidiReports via the following URL:
+
+```
+https://10.8.0.$IP_ON_VPN:9443
+```
+
+<br />
+
+# Under the /docs folder you will find more detailed documentation about all related provisioning steps.
